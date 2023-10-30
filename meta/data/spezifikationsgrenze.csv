@@ -1,0 +1,10 @@
+cylinder_bottom;;;;
+;roughness;parallelism;groove_depth;groove_diameter
+Untere Spezifikationsgrenze;0;0;0.75;-0.049
+Obere Spezifikationsgrenze;2.5;0.1;0.85;-0.01
+;;;;
+;;;;
+piston_rod;;;;
+;coaxiality;diameter;length;
+Untere Spezifikationsgrenze;0;-0.018;163.45;
+Obere Spezifikationsgrenze;50;0.018;163.75;
