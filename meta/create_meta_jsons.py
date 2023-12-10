@@ -65,9 +65,21 @@ def calculateBounds(quality_data):
             for column_idx, column_name in enumerate(column_names):
                 values[column_idx].append(quality_dataset[entry][column_name])
         for column_idx, value_column in enumerate(values):
-            if "n" in value_column:
+            # bounds for "anomaly" or "rework" classification are pointless
+            if column_names[column_idx] in ["anomaly", "rework"]:
                 continue
-            value_column = np.array(value_column, dtype=np.float64)
+            
+            if column_names[column_idx] == "pressure":
+                value_column = np.array(value_column, dtype=np.float64)
+                filtered_values = []
+                # exclude leaky cylinders from the calculation of healthy cylinder bounds
+                threshold = 4000
+                for index in range(len(value_column)):
+                    if value_column[index] > threshold:
+                        filtered_values.append(value_column[index])
+                value_column = np.array(filtered_values)
+            else:
+                value_column = np.array(value_column, dtype=np.float64)
             mean = np.mean(value_column)
             standard_deviation = np.std(value_column)
             bounds[dataset_idx][column_names[column_idx]]["upper_bound"] = (
@@ -298,12 +310,19 @@ for component_type_idx, component_ids in enumerate(ids):
         if component_type_idx == 1:
             if component_id in process_data[1].keys():
                 dict_process_data = process_data[1][component_id]
-                if component_id in quality_data[1].keys():
+                if component_id in anomalist.keys():
+                    if int(anomalist[component_id]) == 1:
+                        dict_process_data["anomaly"] = anomalist[component_id]
+                else:
+                    dict_process_data["anomaly"] = 0
+
+                # this code snippet has been replaced by the one above
+                """if component_id in quality_data[1].keys():
                     dict_process_data["anomaly"] = quality_data[1][component_id][
                         "anomaly"
                     ]
                 else:
-                    dict_process_data["anomaly"] = 0
+                    dict_process_data["anomaly"] = 0"""
                 dict_process_data["name"] = "saw"
                 part_dict["process_data"].append(dict_process_data)
 
