@@ -253,6 +253,17 @@ def readAnomalist():
                 anomalous_parts_dict[row[0]] = row[1]
     return anomalous_parts_dict
 
+def readReworkedPistonRodIDs():
+    rework_path = os.path.join(BASE_DIR, "meta", "data", "piston_rods_rework.csv")
+    rework_ids = []
+    with open(rework_path, newline="") as file:
+        reader = csv.reader(file, delimiter=";", quotechar="|")
+        for row_idx, row in enumerate(reader):
+            if row_idx == 0:
+                continue
+            else:
+                rework_ids.append(row[0])
+    return rework_ids
 
 anomalist = readAnomalist()
 ids = readPartIDs()
@@ -261,11 +272,13 @@ ids[2] = createCylinderIds(cylinder_id_tuples)
 quality_data = readQualityData()
 process_data = readProcessData()
 bounds = getAllBounds(quality_data)
+reworked_ids = readReworkedPistonRodIDs()
 
 part_types = ["piston_rod", "cylinder_bottom", "cylinder"]
 process_types = ["cnc_lathe", "saw", "cnc_mill"]
 for component_type_idx, component_ids in enumerate(ids):
     part_dict_list = []
+    reworked_part_dict_list = []
     for component_id in component_ids:
         part_dict = {}
         part_dict["part_type"] = part_types[component_type_idx]
@@ -400,13 +413,20 @@ for component_type_idx, component_ids in enumerate(ids):
                         ],
                     }
                 )
-        part_dict_list.append(part_dict)
+        if component_id not in reworked_ids:
+            part_dict_list.append(part_dict)
+        else:
+            reworked_part_dict_list.append(part_dict)
 
     if component_type_idx == 0:
         with open(
             os.path.join(DATASET_PATH, "piston_rod", "meta_data.json"), "w"
         ) as json_file:
             json_file.write(json.dumps(part_dict_list, indent=4))
+        with open(
+            os.path.join(DATASET_PATH, "piston_rod", "reworked_piston_rods_meta_data.json"), "w"
+        ) as json_file:
+            json_file.write(json.dumps(reworked_part_dict_list, indent=4))
     if component_type_idx == 1:
         with open(
             os.path.join(DATASET_PATH, "cylinder_bottom", "meta_data.json"), "w"
