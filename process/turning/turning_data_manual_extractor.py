@@ -163,14 +163,21 @@ processes = []
 
 
 ncline_request_timestamps = timestamps
-
+timestamps = timestamps[0]
 def onKeyPress(event):
-    global preview, fig, select_point, current_select, speed, state, start_marker, end_marker, start_point, end_point, mode, assist_pos, ax2, pattern_idx, sample, start_point_estimates, end_point_estimates, position_estimates
+    global preview, fig, select_point, current_select, speed, state, start_marker, end_marker, start_point, end_point, mode, assist_pos, ax2, pattern_idx, sample, start_point_estimates, end_point_estimates, position_estimates, timestamps
     if state == "begin":
         position_estimates = start_position_estimates
     elif state == "end":
         position_estimates = end_position_estimates
     elif state == "done" and event.key == "c":
+        print(len(timestamps))
+        #timestamps = timestamps[0]
+        print(start_marker)
+        print(end_marker)
+        print(timestamps)
+        print(scan_ids)
+        print(pattern_idx)
         processes.append({"start" : timestamps[start_marker], "end" : timestamps[end_marker], "scan_id" : scan_ids[pattern_idx]})
         pattern_idx += 1
         state = "begin"

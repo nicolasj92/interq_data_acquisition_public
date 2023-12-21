@@ -12,7 +12,7 @@ import csv
 import numba
 import os
 
-BASEPATH = 'Z:\cip_dmd\piston_rod\\cnc_lathe\\process_data'
+BASEPATH = '/home/mittwollen_h@PTW.Maschinenbau.TU-Darmstadt.de/data/cip_dmd/piston_rod/cnc_lathe/process_data'
 summer_time = True
 
 if summer_time:
@@ -35,7 +35,7 @@ prompt_file = h5py.File("data/turning_process_data.h5", 'r')
 # split between 870 and 880 
 keys = list(prompt_file.keys())
 print(len(keys))
-keys = ["203402", "207403", "208604"]
+keys = ["202804"]
 
 positions = []
 
@@ -111,7 +111,9 @@ print("download data? y/n")
 if input() == "y":
     with InfluxDBClient(url="XXX", token=token, org=org) as client:
         for i in range(len(keys)):
-            try:
+            #try:
+            if True:
+
                 field_keys = ["timestamp"]
                 time_start = str(int(sec_to_nanosec_factor *int(positions[i][0])))
                 time_end = str(int(sec_to_nanosec_factor * int(positions[i][1])))
@@ -169,9 +171,10 @@ if input() == "y":
                     print("successfully stored data of process with process id: " + keys[i])
         
                 print("remaining: " + str(len(positions) - i) + " processes")
-            except:
+                """#except Exception as e:
+                print(e)
                 with open("error_list.txt", 'a') as el:
-                    el.write("--" + str(keys[i]) + " --")
+                    el.write("--" + str(keys[i]) + " --")"""
 
 else:
     exit()
