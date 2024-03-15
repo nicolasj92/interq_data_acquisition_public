@@ -6,7 +6,7 @@ import h5py
 import json
 
 DATASET_PATH = "/home/mittwollen_h@PTW.Maschinenbau.TU-Darmstadt.de/data/cip_dmd"
-BASE_DIR = "/home/mittwollen_h@PTW.Maschinenbau.TU-Darmstadt.de/interq_data_aquisition"
+BASE_DIR = "/home/mittwollen_h@PTW.Maschinenbau.TU-Darmstadt.de/interq_data_acquisition_public"
 
 
 def getAllBounds(quality_data):
@@ -123,13 +123,13 @@ def readPartIDs():
     for idx, path in enumerate([piston_rod_ids_path, cylinder_bottom_ids_path]):
         with open(path, newline="") as ids_file:
             ids_reader = csv.reader(ids_file, delimiter=",", quotechar="|")
+            next(ids_reader, None)
             for row_idx, row in enumerate(ids_reader):
-                if row_idx == 0:
-                    continue
                 ids[idx].append(row[0])
 
     with open(cylinder_componenent_ids_path, newline="") as ids_file:
         ids_reader = csv.reader(ids_file, delimiter=";", quotechar="|")
+        next(ids_reader, None)
         for row in ids_reader:
             ids[2].append([row[0], row[1]])
 
@@ -217,6 +217,7 @@ def readProcessData():
                 data_path = data_path_list[0]
                 for i in range(4):
                     data_path = data_path + "/" + data_path_list[i + 1]
+
                 try:
                     with h5py.File(subsubdir, "r") as hf:
                         # this logic determines earlist timestamp and latest timestamp of all h5 files in a directory
@@ -233,9 +234,10 @@ def readProcessData():
                 except:
                     # its a spike file
                     #print(data_path)
-                    process_data[idx][process_id]["data_paths"].append(data_path)
-                    process_data[idx][process_id]["start_time"] = process_start
-                    process_data[idx][process_id]["end_time"] = process_end
+                    pass
+                process_data[idx][process_id]["data_paths"].append(data_path)
+                process_data[idx][process_id]["start_time"] = process_start
+                process_data[idx][process_id]["end_time"] = process_end
     return process_data
 
 
