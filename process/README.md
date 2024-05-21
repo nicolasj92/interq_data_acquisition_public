@@ -40,6 +40,10 @@ DATASET_PATH=path/to/your_project/data/cip_dmd
 
 
 ## Quick Start
+A example script to extract the timestamps of the turning data from the InfluxDB.
 ```shell
-python process/turning/data_extraction.py
+python process/turning/data_extraction.py \
+  --query_start_time "2022-09-06 08:00:00" \
+  --query_end_time "2022-11-04 22:00:00" \
+  --save_timestamps ${PROJECT_ROOT}/outputs/timestamps.csv
 ```
