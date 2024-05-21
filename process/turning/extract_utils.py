@@ -65,7 +65,7 @@ def plot_labels(df, timestamp_col, label_col):
     plt.show()
 
 
-def find_peaks_troughs(data, distance=50, prominence=1, p_width=300, p_height=100):
+def find_peaks_troughs(data, distance=50, prominence=1, p_width=400, p_height=100):
     peaks, peaks_properties = find_peaks(data, distance=distance, prominence=prominence, width=p_width)
     troughs, troughs_properties = find_peaks(-data, distance=distance, prominence=prominence, width=p_width)
     return peaks, peaks_properties, troughs, troughs_properties
@@ -95,7 +95,7 @@ def plot_peaks(df, peaks, peaks_properties):
     plt.show()
 
 
-def identify_batch(data, peaks, peaks_properties):
+def identify_batch(peaks, peaks_properties):
     batch = []
     batch_start = 0
     batch_end = 0
