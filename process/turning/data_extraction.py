@@ -1,24 +1,12 @@
-import os
 import argparse
-from pathlib import Path
-import numpy as np
-import pandas as pd
-from datetime import datetime
-from influxdb_client import InfluxDBClient, Point, WritePrecision
-from influxdb_client.client.write_api import SYNCHRONOUS
-import matplotlib.pyplot as plt
-import h5py
-import time as tm
-import pickle
-import csv
-import stumpy
-import scipy
-from dotenv import load_dotenv
-from scipy.signal import find_peaks
-import pytz
-from datetime import timedelta
-from typing import List
 import logging
+import os
+import time as tm
+from pathlib import Path
+
+import pandas as pd
+from dotenv import load_dotenv
+from influxdb_client import InfluxDBClient
 
 import extract_utils
 
@@ -62,6 +50,7 @@ def request_query(db_client, start_time, end_time, measurement_name, field_name,
     logger.info(f"Query time: {_end_time - _start_time} seconds")
     return table
 
+
 def identify_batches(field_name, table):
     """
 
@@ -92,6 +81,7 @@ def identify_batches(field_name, table):
 
     return batch_identifiers, field_data
 
+
 def split_batches_into_products(batch_identifiers, field_data):
     products_time_spans = []
     for _, item in enumerate(batch_identifiers):
@@ -108,12 +98,14 @@ def split_batches_into_products(batch_identifiers, field_data):
     logger.debug(f"Identified {len(products_time_spans_df)} products")
     return products_time_spans_df
 
+
 def save_timestamps(time_spans_df, save_path):
     save_path = Path(save_path)
     if not save_path.parent.exists():
         save_path.parent.mkdir(parents=True, exist_ok=True)
     time_spans_df.to_csv(save_path, index=False, encoding='utf-8')
     logger.info(f"Saved timestamps to {save_path}")
+
 
 def main(args):
     db_client = setup_influx_client(INFLUX_URL, INFLUX_API_TOKEN, INFLUX_ORG)
@@ -135,14 +127,14 @@ def main(args):
         save_timestamps(products_time_spans_df, args.save_timestamps)
 
 
-
 def arg_parse():
     parser = argparse.ArgumentParser(description='Split sequence data')
     parser.add_argument('--query_start_time', type=str, default='2022-09-06 08:00:00',
                         help='Start time of query, the format is %Y-%m-%d %H:%M:%S')
     parser.add_argument('--query_end_time', type=str, default='2022-11-04 22:00:00',
                         help='End time of query, the format is %Y-%m-%d %H:%M:%S')
-    parser.add_argument('--save_timestamps', type=str, default=None, help='Path to save timestamps, do not save if None')
+    parser.add_argument('--save_timestamps', type=str, default=None,
+                        help='Path to save timestamps, do not save if None')
 
     return parser.parse_args()
 
