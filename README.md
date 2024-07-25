@@ -17,6 +17,14 @@ manufacturing: CiP-DMD},
 The article contains further information about the experiment setting and the manufacturing process.
 Please cite the article accordingly if you intend to use this dataset for an academic publication.
 
+## Disclaimer
+
+The latest update of the dataset contains the following number of produced parts/products:
+
+1. 928 piston rods
+2. 847 cylinder bottoms
+3. 802 assembled cylinders
+
 ## Dataset Structure
 The files of the dataset are structured as follows:
 ```
